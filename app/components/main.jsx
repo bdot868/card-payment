@@ -1,10 +1,11 @@
 "use client";
 // components/CombinedForm.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegCalendarDays } from "react-icons/fa6";
+import { AdyenCheckout } from "@adyen/adyen-web";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -68,13 +69,66 @@ const Main = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  
-  const onSubmit = (data) => {
-    console.log(data);
-    
-    
-  };
+  const [checkout, setCheckout] = useState(null);
 
+  useEffect(() => {
+    const initCheckout = async () => {
+      const script = document.createElement("script");
+      script.src =
+        "https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.0.0/adyen.js";
+      script.async = true;
+      script.onload = async () => {
+        const configuration = {
+          clientKey: process.env.NEXT_PUBLIC_ADYEN_CLIENT_KEY,
+          locale: "en-US",
+          environment: process.env.NEXT_PUBLIC_ADYEN_ENVIRONMENT,
+          countryCode: "US",
+          paymentMethodsResponse: {}, // Will be fetched below
+        };
+        const checkoutInstance = await new window.AdyenCheckout(configuration);
+        console.log({ checkoutInstance });
+        setCheckout(checkoutInstance);
+      };
+      document.body.appendChild(script);
+    };
+    initCheckout();
+  }, []);
+
+  const onSubmit = async (formData) => {
+    // Check if checkout instance is ready
+    if (!checkout) {
+      console.error("Checkout instance is not ready.");
+      return;
+    }
+
+    try {
+      // Prepare payment method data
+      const paymentMethod = {
+        type: "scheme",
+        encryptedCardNumber: formData.cardNumber,
+        encryptedExpiryMonth: formData.expirationDate.split("/")[0],
+        encryptedExpiryYear: "20" + formData.expirationDate.split("/")[1], // Assuming YY format
+        encryptedSecurityCode: formData.securityCode,
+        holderName: formData.firstName + " " + formData.lastName,
+      };
+      console.log({ paymentMethod });
+      // Send the payment data to your API
+      const response = await fetch("/api/checkoutSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentMethod: paymentMethod,
+          amount: { value: formData.paymentAmount * 100, currency: "USD" },
+        }),
+      });
+      console.log({ response });
+
+      console.log("Payment response:", response);
+      // Handle the payment response accordingly
+    } catch (error) {
+      console.error("Payment submission error:", error);
+    }
+  };
   return (
     <div className="bg-[#FFFFF0]">
       <form
