@@ -151,7 +151,7 @@ const Main = () => {
     } catch (error) {
       console.error("Payment submission error:", error);
     }
-};
+  };
   const onSubmitReview = (formData) => {
     setFormData(formData);
     setSteps(1);
@@ -163,7 +163,7 @@ const Main = () => {
       </nav>
       {steps === 0 && (
         <div className="bg-[#FFFFF0]">
-          <div className="w-[80%] mx-auto flex flex-col gap-8 py-[40px]">
+          <div className="w-[90%] md:w-[80%] mx-auto flex flex-col gap-8 py-[40px]">
             <p>
               Thank you for choosing Forest Lawn's online bill payment option.
               You can make your monthly payment instantly with no user name or
@@ -189,13 +189,13 @@ const Main = () => {
               pay for "at-need" plans, please call the park's cashier at the
               number provided by your Memorial Counselor.
             </p>
-            <div className="flex justify-center">
-              <p className="w-[85%]">
+            <div className="flex flex-col md:flex-row justify-center">
+              <p className="md:w-[85%]">
                 If you have any questions, please call 1 (888) 204-3131 and ask
                 for Client Accounts. We have staff available to assist you
                 Monday through Friday, 8:00 am to 5:00 pm.
               </p>
-              <p className="w-[15%] text-end">
+              <p className="md:w-[15%] md:text-end">
                 Call Us Directly <br />
                 (888) 204-3131
               </p>
@@ -209,8 +209,8 @@ const Main = () => {
             onSubmit={handleSubmit(onSubmitReview)}
             className="space-y-4 p-4 bg-[#FFFFF0]"
           >
-            <div className="w-[80%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px] ">
-              <h2 className=" text-[36px] text-[#626D4D]">
+            <div className="md:w-[80%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px] ">
+              <h2 className=" text-[24px] md:text-[36px] text-[#626D4D]">
                 Card Holder Information
               </h2>
               <p className="text-red-600 italic py-[20px]">
@@ -221,7 +221,7 @@ const Main = () => {
                 credit card.
               </p>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block text-sm md:text-base md:w-[20%] text-[#626D4D]">
                   First Name
                 </label>
                 <div className="w-[65%]">
@@ -237,7 +237,7 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block text-sm md:w-[20%] text-[#626D4D]">
                   Last Name
                 </label>
                 <div className="w-[65%]">
@@ -260,7 +260,7 @@ const Main = () => {
               </div>
 
               <div className="flex gap-8  items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block text-sm md:text-base w-[20%] text-[#626D4D]">
                   Street Address
                 </label>
                 <div className="w-[65%]">
@@ -276,7 +276,9 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">City</label>
+                <label className="block w-[20%] text-sm md:text-base text-[#626D4D]">
+                  City
+                </label>
                 <div className="w-[65%]">
                   <input
                     {...register("city")}
@@ -288,11 +290,13 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">State</label>
+                <label className="block w-[20%] text-sm md:text-base text-[#626D4D]">
+                  State
+                </label>
                 <div className="w-[65%]">
                   <select
                     {...register("state")}
-                    className="mt-1 block w-[20%] py-[5px]  "
+                    className="mt-1 block md:w-[20%] py-[5px]  "
                     style={{
                       border: errors.state
                         ? "3px solid red"
@@ -354,7 +358,9 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">Zip</label>
+                <label className="block w-[20%] text-sm md:text-base text-[#626D4D]">
+                  Zip
+                </label>
                 <div className="w-[65%]">
                   <input
                     {...register("zip")}
@@ -373,7 +379,9 @@ const Main = () => {
                 </p>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">Phone</label>
+                <label className="block w-[20%] text-sm md:text-base text-[#626D4D]">
+                  Phone
+                </label>
                 <div className="w-[65%]">
                   <input
                     {...register("phone")}
@@ -388,7 +396,7 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block w-[20%] text-sm md:text-base text-[#626D4D]">
                   Email Address
                 </label>
                 <div className="w-[65%]">
@@ -404,7 +412,7 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block w-[20%] text-sm md:text-base text-[#626D4D]">
                   Confirm Email Address
                 </label>
                 <div className="w-[65%]">
@@ -421,8 +429,8 @@ const Main = () => {
               </div>
             </div>
 
-            <div className="w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
-              <h2 className="text-[36px] text-[#626D4D]">
+            <div className="md:w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
+              <h2 className="text-[24px] md:text-[36px] text-[#626D4D]">
                 Credit Card Information
               </h2>
               <p className="text-red-600 italic py-[20px]">
@@ -432,10 +440,10 @@ const Main = () => {
                 We accept Visa, MasterCard, and Discover.
               </p>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block text-sm md:text-base w-[29%] md:w-[20%] text-[#626D4D]">
                   Card Type
                 </label>
-                <div className="w-[25%]">
+                <div className="md:w-[25%]">
                   <select
                     {...register("cardType")}
                     className="mt-1 block w-full py-[4px] "
@@ -452,12 +460,12 @@ const Main = () => {
                   </select>
                 </div>
               </div>
-              <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+              <div className="flex gap-8 pt-[16px] items-start md:items-center">
+                <label className="block w-[30%] md:w-[20%] text-sm md:text-base text-[#626D4D]">
                   Card Number
                 </label>
-                <div className="w-[65%] flex items-center gap-2">
-                  <div className="w-[38%] flex gap-4">
+                <div className="w-[65%] flex flex-col md:flex-row items-end md:items-center gap-2">
+                  <div className="md:w-[38%] flex gap-4">
                     <input
                       {...register("cardNumber", {
                         required: "Card number is required",
@@ -486,51 +494,54 @@ const Main = () => {
                       }}
                     />
                   </div>
-                  <p className="italic text-[14px] "> No space or dashes</p>
+                  <p className="italic text-[12px] md:text-[14px] ">
+                    {" "}
+                    No space or dashes
+                  </p>
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block text-sm md:text-base w-[30%] md:w-[20%] text-[#626D4D]">
                   Expiration Date
                 </label>
                 <div className="w-[65%] flex items-center gap-2">
                   <input
                     {...register("expirationDate")}
                     placeholder="mm/yyyy"
-                    className="mt-1 block w-[38%]  "
+                    className="block w-[50%] md:w-[38%]  "
                     style={{
                       border: errors.expirationDate
                         ? "3px solid red"
                         : "1px solid black",
                     }}
                   />
-                  <p className="italic text-[14px] flex item-center gap-2">
+                  <p className="italic text-xs md:text-[14px] flex item-center gap-2">
                     <FaRegCalendarDays />
                     mm/yyyy
                   </p>
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block md:w-[20%] text-sm md:text-base text-[#626D4D]">
                   Security Code
                 </label>
                 <div className="w-[65%] flex items-center gap-2">
                   <input
                     {...register("securityCode")}
-                    className="mt-1 block w-[20%]  "
+                    className="mt-1 block w-[4rem] md:w-[20%]  "
                     style={{
                       border: errors.securityCode
                         ? "3px solid red"
                         : "1px solid black",
                     }}
                   />
-                  <p className="italic text-[14px] flex item-center gap-2">
+                  <p className="italic text-xs md:text-[14px] flex item-center gap-2">
                     Enter the 3 digit security code on the back of the card.
                   </p>
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block w-[30%] text-sm md:text-base md:w-[20%] text-[#626D4D]">
                   Payment Amount
                 </label>
                 <div className="w-[65%] flex items-center gap-2">
@@ -544,19 +555,19 @@ const Main = () => {
                         : "1px solid black",
                     }}
                   />
-                  <p className="italic text-[14px] flex item-center gap-2">
+                  <p className="italic text-[12px] md:text-[14px] flex item-center gap-2">
                     US Dollars only
                   </p>
                 </div>
               </div>
-              <p className="italic text-[14px] pb-[16px] pt-[24px]">
+              <p className="italic text-xs md:text-[14px] pb-[16px] pt-[24px]">
                 Any credit card information entered is not retained and will be
                 erased after your payment has processed.
               </p>
             </div>
 
-            <div className="w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
-              <h2 className="text-[36px] text-[#626D4D]">
+            <div className="md:w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
+              <h2 className="text-[24px] md:text-[36px] text-[#626D4D]">
                 Purchaser Information
               </h2>
               <p className="text-red-600 italic py-[20px]">
@@ -564,7 +575,7 @@ const Main = () => {
               </p>
 
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block text-sm md:text-base w-[30%] md:w-[20%] text-[#626D4D]">
                   Account #
                 </label>
                 <div className="w-[65%]">
@@ -580,7 +591,7 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block text-sm md:text-base w-[30%] md:w-[20%] text-[#626D4D]">
                   Re-enter Account #
                 </label>
                 <div className="w-[65%]">
@@ -596,7 +607,7 @@ const Main = () => {
                 </div>
               </div>
               <div className="flex gap-8 pt-[16px] items-center">
-                <label className="block w-[20%] text-[#626D4D]">
+                <label className="block w-[30%] text-sm md:text-base md:w-[20%] text-[#626D4D]">
                   Name on Contract
                 </label>
                 <div className="w-[65%]">
@@ -614,16 +625,16 @@ const Main = () => {
               <button
                 type="submit"
                 style={{ textShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)" }}
-                className="mt-8 bg-[#97751E] text-white py-2 px-4 rounded"
+                className="mt-8 bg-[#97751E] text-sm md:text-base text-white py-2 px-4 rounded"
               >
                 Review Payment Method
               </button>
               {/* footer section */}
-              <div className="w-[80%] mt-[20px] mx-auto border-y-[1.5px] border-solid border-[#8D8866] py-[20px]">
+              <div className="md:w-[80%] mt-[20px] mx-auto border-y-[1.5px] border-solid border-[#8D8866] py-[20px]">
                 <p className="text-[#626D4D] text-[11px] text-center">
                   Thank you for your interest in Forest Lawn.
                 </p>
-                <div className="gap-8 flex pt-[10px]">
+                <div className="gap-8 flex flex-col md:flex-row pt-[10px]">
                   <p className="text-[#626D4D] text-[12px]">
                     Copyright @ 2024 FOREST LAWN MEMORIAL-PARK ASSOCATION FOREST
                     LAWN MEMORIAL-PARKS & MORTUARIES
@@ -673,7 +684,7 @@ const Main = () => {
         <div className="flex flex-col items-center justify-center bg-[#E0e9C6] h-screen">
           {response ? (
             <div className="p-6 rounded-lg">
-              {response.paymentResponse.resultCode === "Authorised" ? (
+              {response?.paymentResponse?.resultCode === "Authorised" ? (
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-green-600">
                     Thank You!
