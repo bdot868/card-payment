@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegCalendarDays } from "react-icons/fa6";
 import { AdyenCheckout } from "@adyen/adyen-web";
+import Review from "./Review";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -70,6 +71,9 @@ const Main = () => {
     resolver: yupResolver(schema),
   });
   const [checkout, setCheckout] = useState(null);
+  const [steps, setSteps] = useState(0);
+  const [formData, setFormData] = useState({});
+  const [response, setResponse] = useState({});
 
   useEffect(() => {
     const initCheckout = async () => {
@@ -105,424 +109,530 @@ const Main = () => {
       // Prepare payment method data
       const paymentMethod = {
         type: "scheme",
-        encryptedCardNumber: formData.cardNumber,
-        encryptedExpiryMonth: formData.expirationDate.split("/")[0],
-        encryptedExpiryYear: "20" + formData.expirationDate.split("/")[1], // Assuming YY format
-        encryptedSecurityCode: formData.securityCode,
-        holderName: formData.firstName + " " + formData.lastName,
+        encryptedCardNumber: `test_${formData.cardNumber}`,
+        encryptedExpiryMonth: `test_${formData.expirationDate.split("/")[0]}`,
+        encryptedExpiryYear: `test_${formData.expirationDate.split("/")[1]}`, // Assuming YY format
+        encryptedSecurityCode: `test_${formData.securityCode}`,
+        holderName: `${formData.firstName} ${formData.lastName}`,
       };
       console.log({ paymentMethod });
-      // Send the payment data to your API
-      const response = await fetch("/api/checkoutSession", {
+
+      // Prepare the billing address data
+      const billingAddress = {
+        city: formData.city,
+        country: "US", // Assuming country is US
+        houseNumberOrName: formData.streetAddress,
+        postalCode: formData.zip,
+        stateOrProvince: formData.state,
+        street: formData.streetAddress,
+      };
+
+      // Send the payment data to API
+      const res = await fetch("/api/checkoutSession", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           paymentMethod: paymentMethod,
           amount: { value: formData.paymentAmount * 100, currency: "USD" },
+          billingAddress: billingAddress,
+          shopperEmail: formData.email,
+          shopperName: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+          },
         }),
       });
-      console.log({ response });
-
+      const response = await res.json();
+      setResponse(response);
       console.log("Payment response:", response);
+      setSteps(2);
       // Handle the payment response accordingly
     } catch (error) {
       console.error("Payment submission error:", error);
     }
   };
+  const onSubmitReview = (formData) => {
+    setFormData(formData);
+    setSteps(1);
+  };
   return (
-    <div className="bg-[#FFFFF0]">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 p-4 bg-green-100"
-      >
-        <div className="w-[80%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px] ">
-          <h2 className=" text-[36px] text-[#626D4D]">
-            Card Holder Information
-          </h2>
-          <p className="text-red-600 italic py-[20px]">
-            All fields are required
-          </p>
-          <p className="italic text-[14px]">
-            Enter the card holder name as it appears on the front of the credit
-            card.
-          </p>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">First Name</label>
-            <div className="w-[65%]">
-              <input
-                {...register("firstName")}
-                className="mt-1 block w-full "
-                style={{
-                  border: errors.firstName
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">Last Name</label>
-            <div className="w-[65%]">
-              <input
-                {...register("lastName")}
-                className="mt-1 block w-full  "
-                style={{
-                  border: errors.lastName ? "3px solid red" : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="py-[50px]">
-            <p className="text-red-500 font-bold">
-              For account verification, enter the address where you receive the
-              bill for this credit card.
-            </p>
-          </div>
-
-          <div className="flex gap-8  items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Street Address
-            </label>
-            <div className="w-[65%]">
-              <input
-                {...register("streetAddress")}
-                className="mt-1 block w-full  "
-                style={{
-                  border: errors.lastName ? "3px solid red" : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">City</label>
-            <div className="w-[65%]">
-              <input
-                {...register("city")}
-                className="mt-1 block w-full "
-                style={{
-                  border: errors.city ? "3px solid red" : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">State</label>
-            <div className="w-[65%]">
-              <select
-                {...register("state")}
-                className="mt-1 block w-[20%] py-[5px]  "
-                style={{
-                  border: errors.state ? "3px solid red" : "1px solid black",
-                }}
-              >
-                <option value="">Select a state</option>
-                <option value="AL">AL</option>
-                <option value="AK">AK</option>
-                <option value="AZ">AZ</option>
-                <option value="AR">AR</option>
-                <option value="CA">CA</option>
-                <option value="CO">CO</option>
-                <option value="CT">CT</option>
-                <option value="DE">DE</option>
-                <option value="FL">FL</option>
-                <option value="GA">GA</option>
-                <option value="HI">HI</option>
-                <option value="ID">ID</option>
-                <option value="IL">IL</option>
-                <option value="IN">IN</option>
-                <option value="IA">IA</option>
-                <option value="KS">KS</option>
-                <option value="KY">KY</option>
-                <option value="LA">LA</option>
-                <option value="ME">ME</option>
-                <option value="MD">MD</option>
-                <option value="MA">MA</option>
-                <option value="MI">MI</option>
-                <option value="MN">MN</option>
-                <option value="MS">MS</option>
-                <option value="MO">MO</option>
-                <option value="MT">MT</option>
-                <option value="NE">NE</option>
-                <option value="NV">NV</option>
-                <option value="NH">NH</option>
-                <option value="NJ">NJ</option>
-                <option value="NM">NM</option>
-                <option value="NY">NY</option>
-                <option value="NC">NC</option>
-                <option value="ND">ND</option>
-                <option value="OH">OH</option>
-                <option value="OK">OK</option>
-                <option value="OR">OR</option>
-                <option value="PA">PA</option>
-                <option value="RI">RI</option>
-                <option value="SC">SC</option>
-                <option value="SD">SD</option>
-                <option value="TN">TN</option>
-                <option value="TX">TX</option>
-                <option value="UT">UT</option>
-                <option value="VT">VT</option>
-                <option value="VA">VA</option>
-                <option value="WA">WA</option>
-                <option value="WV">WV</option>
-                <option value="WI">WI</option>
-                <option value="WY">WY</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">Zip</label>
-            <div className="w-[65%]">
-              <input
-                {...register("zip")}
-                className="mt-1 block w-full  "
-                style={{
-                  border: errors.zip ? "3px solid red" : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="pt-[16px]">
-            <p className="italic text-[14px]">
-              This information will be used if there is a question about your
-              payment and to send receipt confirmation. We do not sell contact
-              information to third parties.
-            </p>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">Phone</label>
-            <div className="w-[65%]">
-              <input
-                {...register("phone")}
-                placeholder="111-555-5555"
-                className="mt-1 block w-full  "
-                style={{
-                  border: errors.phone ? "3px solid red" : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Email Address
-            </label>
-            <div className="w-[65%]">
-              <input
-                {...register("email")}
-                className="mt-1 block w-full "
-                style={{
-                  border: errors.email ? "3px solid red" : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Confirm Email Address
-            </label>
-            <div className="w-[65%]">
-              <input
-                {...register("confirmEmail")}
-                className="mt-1 block w-full  "
-                style={{
-                  border: errors.confirmEmail
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
-          <h2 className="text-[36px] text-[#626D4D]">
-            Credit Card Information
-          </h2>
-          <p className="text-red-600 italic py-[20px]">
-            All fields are required
-          </p>
-          <p className="italic text-[14px]">
-            We accept Visa, MasterCard, and Discover.
-          </p>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">Card Type</label>
-            <div className="w-[25%]">
-              <select
-                {...register("cardType")}
-                className="mt-1 block w-full py-[4px] "
-                style={{
-                  border: errors.cardType ? "3px solid red" : "1px solid black",
-                }}
-              >
-                <option value="">Select Card Type</option>
-                <option value="Visa">Visa</option>
-                <option value="MasterCard">MasterCard</option>
-                <option value="Discover">Discover</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">Card Number</label>
-            <div className="w-[65%] flex items-center gap-2">
-              <div className="w-[38%] flex gap-4">
-                <input
-                  {...register("cardNumber", {
-                    required: "Card number is required",
-                    minLength: {
-                      value: 16,
-                      message: "Card number must be exactly 16 digits",
-                    },
-                    maxLength: {
-                      value: 16,
-                      message: "Card number must be exactly 16 digits",
-                    },
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: "Only numeric values are allowed",
-                    },
-                  })}
-                  type="number"
-                  className="mt-1 block   w-full"
-                  style={{
-                    border: errors.cardNumber
-                      ? "3px solid red"
-                      : "1px solid black",
-                  }}
-                  onInput={(e) => {
-                    e.target.value = e.target.value.replace(/\D/g, "");
-                  }}
-                />
-              </div>
-              <p className="italic text-[14px] "> No space or dashes</p>
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Expiration Date
-            </label>
-            <div className="w-[65%] flex items-center gap-2">
-              <input
-                {...register("expirationDate")}
-                placeholder="mm/yyyy"
-                className="mt-1 block w-[38%]  "
-                style={{
-                  border: errors.expirationDate
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-              <p className="italic text-[14px] flex item-center gap-2">
-                <FaRegCalendarDays />
-                mm/yy
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Security Code
-            </label>
-            <div className="w-[65%] flex items-center gap-2">
-              <input
-                {...register("securityCode")}
-                className="mt-1 block w-[20%]  "
-                style={{
-                  border: errors.securityCode
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-              <p className="italic text-[14px] flex item-center gap-2">
-                Enter the 3 digit security code on the back of the card.
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Payment Amount
-            </label>
-            <div className="w-[65%] flex items-center gap-2">
-              <input
-                type="number"
-                {...register("paymentAmount")}
-                className="mt-1 block w-[38%]  "
-                style={{
-                  border: errors.paymentAmount
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-              <p className="italic text-[14px] flex item-center gap-2">
-                US Dollars only
-              </p>
-            </div>
-          </div>
-          <p className="italic text-[14px] pb-[16px] pt-[24px]">
-            Any credit card information entered is not retained and will be
-            erased after your payment has processed.
-          </p>
-        </div>
-
-        <div className="w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
-          <h2 className="text-[36px] text-[#626D4D]">Purchaser Information</h2>
-          <p className="text-red-600 italic py-[20px]">
-            All fields are required
-          </p>
-          <p className="italic text-[14px]">
-            We accept Visa, MasterCard, and Discover.
-          </p>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">Account #</label>
-            <div className="w-[65%]">
-              <input
-                {...register("accountNumber")}
-                className="mt-1 block w-full border border-gray-300 "
-                style={{
-                  border: errors.accountNumber
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Re-enter Account #
-            </label>
-            <div className="w-[65%]">
-              <input
-                {...register("reEnterAccountNumber")}
-                className="mt-1 block w-full border border-gray-300 "
-                style={{
-                  border: errors.reEnterAccountNumber
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex gap-8 pt-[16px] items-center">
-            <label className="block w-[20%] text-[#626D4D]">
-              Name on Contract
-            </label>
-            <div className="w-[65%]">
-              <input
-                {...register("nameOnContract")}
-                className="mt-1 block w-full border border-gray-300 "
-                style={{
-                  border: errors.nameOnContract
-                    ? "3px solid red"
-                    : "1px solid black",
-                }}
-              />
-            </div>
-          </div>
-          <button
-            type="submit"
-            className="mt-8 bg-blue-500 text-white py-2 px-4 rounded"
+    <div className="bg-[#E0e9C6]">
+      <nav className="w-full">
+        <img
+          src="https://billpay.forestlawn.com/img/FL-200102_Bill_Pay_Banner_1920x145.jpg?rev=20200701"
+          className="w-full"
+          alt=""
+        />
+      </nav>
+      {steps === 0 && (
+        <div className="bg-[#FFFFF0]">
+          <form
+            onSubmit={handleSubmit(onSubmitReview)}
+            className="space-y-4 p-4 bg-green-100"
           >
-            Review Payment Method
+            <div className="w-[80%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px] ">
+              <h2 className=" text-[36px] text-[#626D4D]">
+                Card Holder Information
+              </h2>
+              <p className="text-red-600 italic py-[20px]">
+                All fields are required
+              </p>
+              <p className="italic text-[14px]">
+                Enter the card holder name as it appears on the front of the
+                credit card.
+              </p>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  First Name
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("firstName")}
+                    className="mt-1 block w-full "
+                    style={{
+                      border: errors.firstName
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Last Name
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("lastName")}
+                    className="mt-1 block w-full  "
+                    style={{
+                      border: errors.lastName
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="py-[50px]">
+                <p className="text-red-500 font-bold">
+                  For account verification, enter the address where you receive
+                  the bill for this credit card.
+                </p>
+              </div>
+
+              <div className="flex gap-8  items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Street Address
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("streetAddress")}
+                    className="mt-1 block w-full  "
+                    style={{
+                      border: errors.lastName
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">City</label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("city")}
+                    className="mt-1 block w-full "
+                    style={{
+                      border: errors.city ? "3px solid red" : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">State</label>
+                <div className="w-[65%]">
+                  <select
+                    {...register("state")}
+                    className="mt-1 block w-[20%] py-[5px]  "
+                    style={{
+                      border: errors.state
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  >
+                    <option value="">Select a state</option>
+                    <option value="AL">AL</option>
+                    <option value="AK">AK</option>
+                    <option value="AZ">AZ</option>
+                    <option value="AR">AR</option>
+                    <option value="CA">CA</option>
+                    <option value="CO">CO</option>
+                    <option value="CT">CT</option>
+                    <option value="DE">DE</option>
+                    <option value="FL">FL</option>
+                    <option value="GA">GA</option>
+                    <option value="HI">HI</option>
+                    <option value="ID">ID</option>
+                    <option value="IL">IL</option>
+                    <option value="IN">IN</option>
+                    <option value="IA">IA</option>
+                    <option value="KS">KS</option>
+                    <option value="KY">KY</option>
+                    <option value="LA">LA</option>
+                    <option value="ME">ME</option>
+                    <option value="MD">MD</option>
+                    <option value="MA">MA</option>
+                    <option value="MI">MI</option>
+                    <option value="MN">MN</option>
+                    <option value="MS">MS</option>
+                    <option value="MO">MO</option>
+                    <option value="MT">MT</option>
+                    <option value="NE">NE</option>
+                    <option value="NV">NV</option>
+                    <option value="NH">NH</option>
+                    <option value="NJ">NJ</option>
+                    <option value="NM">NM</option>
+                    <option value="NY">NY</option>
+                    <option value="NC">NC</option>
+                    <option value="ND">ND</option>
+                    <option value="OH">OH</option>
+                    <option value="OK">OK</option>
+                    <option value="OR">OR</option>
+                    <option value="PA">PA</option>
+                    <option value="RI">RI</option>
+                    <option value="SC">SC</option>
+                    <option value="SD">SD</option>
+                    <option value="TN">TN</option>
+                    <option value="TX">TX</option>
+                    <option value="UT">UT</option>
+                    <option value="VT">VT</option>
+                    <option value="VA">VA</option>
+                    <option value="WA">WA</option>
+                    <option value="WV">WV</option>
+                    <option value="WI">WI</option>
+                    <option value="WY">WY</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">Zip</label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("zip")}
+                    className="mt-1 block w-full  "
+                    style={{
+                      border: errors.zip ? "3px solid red" : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="pt-[16px]">
+                <p className="italic text-[14px]">
+                  This information will be used if there is a question about
+                  your payment and to send receipt confirmation. We do not sell
+                  contact information to third parties.
+                </p>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">Phone</label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("phone")}
+                    placeholder="111-555-5555"
+                    className="mt-1 block w-full  "
+                    style={{
+                      border: errors.phone
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Email Address
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("email")}
+                    className="mt-1 block w-full "
+                    style={{
+                      border: errors.email
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Confirm Email Address
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("confirmEmail")}
+                    className="mt-1 block w-full  "
+                    style={{
+                      border: errors.confirmEmail
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
+              <h2 className="text-[36px] text-[#626D4D]">
+                Credit Card Information
+              </h2>
+              <p className="text-red-600 italic py-[20px]">
+                All fields are required
+              </p>
+              <p className="italic text-[14px]">
+                We accept Visa, MasterCard, and Discover.
+              </p>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Card Type
+                </label>
+                <div className="w-[25%]">
+                  <select
+                    {...register("cardType")}
+                    className="mt-1 block w-full py-[4px] "
+                    style={{
+                      border: errors.cardType
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  >
+                    <option value="">Select Card Type</option>
+                    <option value="Visa">Visa</option>
+                    <option value="MasterCard">MasterCard</option>
+                    <option value="Discover">Discover</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Card Number
+                </label>
+                <div className="w-[65%] flex items-center gap-2">
+                  <div className="w-[38%] flex gap-4">
+                    <input
+                      {...register("cardNumber", {
+                        required: "Card number is required",
+                        minLength: {
+                          value: 16,
+                          message: "Card number must be exactly 16 digits",
+                        },
+                        maxLength: {
+                          value: 16,
+                          message: "Card number must be exactly 16 digits",
+                        },
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Only numeric values are allowed",
+                        },
+                      })}
+                      type="number"
+                      className="mt-1 block   w-full"
+                      style={{
+                        border: errors.cardNumber
+                          ? "3px solid red"
+                          : "1px solid black",
+                      }}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(/\D/g, "");
+                      }}
+                    />
+                  </div>
+                  <p className="italic text-[14px] "> No space or dashes</p>
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Expiration Date
+                </label>
+                <div className="w-[65%] flex items-center gap-2">
+                  <input
+                    {...register("expirationDate")}
+                    placeholder="mm/yyyy"
+                    className="mt-1 block w-[38%]  "
+                    style={{
+                      border: errors.expirationDate
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                  <p className="italic text-[14px] flex item-center gap-2">
+                    <FaRegCalendarDays />
+                    mm/yyyy
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Security Code
+                </label>
+                <div className="w-[65%] flex items-center gap-2">
+                  <input
+                    {...register("securityCode")}
+                    className="mt-1 block w-[20%]  "
+                    style={{
+                      border: errors.securityCode
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                  <p className="italic text-[14px] flex item-center gap-2">
+                    Enter the 3 digit security code on the back of the card.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Payment Amount
+                </label>
+                <div className="w-[65%] flex items-center gap-2">
+                  <input
+                    type="number"
+                    {...register("paymentAmount")}
+                    className="mt-1 block w-[38%]  "
+                    style={{
+                      border: errors.paymentAmount
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                  <p className="italic text-[14px] flex item-center gap-2">
+                    US Dollars only
+                  </p>
+                </div>
+              </div>
+              <p className="italic text-[14px] pb-[16px] pt-[24px]">
+                Any credit card information entered is not retained and will be
+                erased after your payment has processed.
+              </p>
+            </div>
+
+            <div className="w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
+              <h2 className="text-[36px] text-[#626D4D]">
+                Purchaser Information
+              </h2>
+              <p className="text-red-600 italic py-[20px]">
+                All fields are required
+              </p>
+
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Account #
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("accountNumber")}
+                    className="mt-1 block w-full border border-gray-300 "
+                    style={{
+                      border: errors.accountNumber
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Re-enter Account #
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("reEnterAccountNumber")}
+                    className="mt-1 block w-full border border-gray-300 "
+                    style={{
+                      border: errors.reEnterAccountNumber
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-8 pt-[16px] items-center">
+                <label className="block w-[20%] text-[#626D4D]">
+                  Name on Contract
+                </label>
+                <div className="w-[65%]">
+                  <input
+                    {...register("nameOnContract")}
+                    className="mt-1 block w-full border border-gray-300 "
+                    style={{
+                      border: errors.nameOnContract
+                        ? "3px solid red"
+                        : "1px solid black",
+                    }}
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                style={{ textShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)" }}
+                className="mt-8 bg-[#97751E] text-white py-2 px-4 rounded"
+              >
+                Review Payment Method
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+      {steps === 1 && (
+        <Review
+          formData={formData}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+        />
+      )}
+      {steps === 2 && (
+        <div className="flex flex-col items-center justify-center bg-[#E0e9C6] h-screen">
+          {response ? (
+            <div className="p-6 rounded-lg">
+              {response.resultCode === "Authorised" ? (
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-green-600">
+                    Thank You!
+                  </h2>
+                  <p className="mt-4 text-gray-700">
+                    Your payment was successfully authorised.
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-red-600">
+                    Payment Failed
+                  </h2>
+                  <p className="mt-4 text-gray-700">
+                    Unfortunately, your payment was refused.
+                  </p>
+                  <p className="mt-2 text-gray-500">
+                    Reason: {response?.paymentResponse?.refusalReason}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-600">
+                Processing Payment...
+              </h2>
+            </div>
+          )}
+          <button
+          onClick={() => setSteps(0)}
+            style={{ textShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)" }}
+            className="bg-[#385624] hover:bg-[#385624d4] text-white h-[40px] w-[6rem] rounded-md"
+          >
+            Go Back
           </button>
         </div>
-      </form>
+      )}
     </div>
   );
 };

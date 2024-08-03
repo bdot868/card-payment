@@ -1,5 +1,3 @@
-// pages/api/checkoutSession.js
-
 import { Client, Config, CheckoutAPI } from "@adyen/api-library";
 import { NextResponse } from "next/server";
 
@@ -9,25 +7,57 @@ export async function POST(req, res) {
   }
 
   const config = new Config();
+  const body = await req.json();
+  console.log({ body });
   config.apiKey = process.env.ADYEN_API_KEY;
+  config.environment = "TEST";
   const client = new Client({ config });
   client.setEnvironment("TEST"); // Use 'LIVE' for production
   const checkout = new CheckoutAPI(client);
-
+  const merchantAccount = process.env.ADYEN_MERCHANT_ACCOUNT;
+  console.log({ merchantAccount });
   const paymentRequest = {
-    amount: { currency: "USD", value: 1000 }, // Example amount in minor units
-    reference: "YOUR_ORDER_REFERENCE",
-    paymentMethod: req.body.paymentMethod,
-    returnUrl: "https://your-website.com/checkout",
+    amount: body.amount,
+    reference: "Your order number 112",
+    paymentMethod: body.paymentMethod,
+    recurringProcessingModel: "CardOnFile",
+    returnUrl: "http://localhost.com",
     merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT,
+    billingAddress: body.billingAddress,
+    shopperEmail: body.shopperEmail,
+    shopperName: body.shopperName,
   };
+  console.log({ paymentRequest });
 
   try {
-    const paymentResponse = await checkout.payments(paymentRequest);
-    console.log({paymentResponse});
-    console.log({ data });
-    return NextResponse.json(paymentResponse);
+    const paymentResponse = await checkout.PaymentsApi.payments(paymentRequest);
+    console.log({ paymentResponse });
+
+    // Check the resultCode to determine if the payment is authorised or refused
+    const { resultCode } = paymentResponse;
+
+    if (resultCode === "Authorised") {
+      return NextResponse.json({
+        message: "Payment authorised",
+        paymentResponse,
+      });
+    } else if (resultCode === "Refused") {
+      return NextResponse.json({
+        message: "Payment refused",
+        paymentResponse,
+      });
+    } else {
+      return NextResponse.json({
+        message: "Payment not authorised",
+        resultCode,
+        paymentResponse,
+      });
+    }
   } catch (error) {
-    return NextResponse.json(error);
+    console.error("Payment error:", error);
+    return NextResponse.json({
+      message: "Payment error",
+      error: error.message,
+    });
   }
 }
