@@ -158,8 +158,8 @@ const Main = () => {
   };
   return (
     <div className="bg-[#E0e9C6]">
-      <nav className="w-full">
-        <img src="./nav.jpg" className="w-full" alt="" />
+      <nav className="w-full ">
+        <img src="./nav.jpg" className="w-full h-[5rem] md:h-full object-cover md:object-fill object-left" alt="" />
       </nav>
       {steps === 0 && (
         <div className="bg-[#FFFFF0]">

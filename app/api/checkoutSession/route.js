@@ -16,9 +16,11 @@ export async function POST(req, res) {
   const checkout = new CheckoutAPI(client);
   const merchantAccount = process.env.ADYEN_MERCHANT_ACCOUNT;
   console.log({ merchantAccount });
+  const uniqueOrderNumber = `${Date.now()}${Math.floor(Math.random() * 1000)}`;
+  console.log({ uniqueOrderNumber });
   const paymentRequest = {
     amount: body.amount,
-    reference: "Your order number 112",
+    reference: `Your order number ${uniqueOrderNumber}`,
     paymentMethod: body.paymentMethod,
     recurringProcessingModel: "CardOnFile",
     returnUrl: "http://localhost.com",
