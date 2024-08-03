@@ -151,7 +151,7 @@ const Main = () => {
     } catch (error) {
       console.error("Payment submission error:", error);
     }
-  };
+};
   const onSubmitReview = (formData) => {
     setFormData(formData);
     setSteps(1);
@@ -159,11 +159,7 @@ const Main = () => {
   return (
     <div className="bg-[#E0e9C6]">
       <nav className="w-full">
-        <img
-          src="https://billpay.forestlawn.com/img/FL-200102_Bill_Pay_Banner_1920x145.jpg?rev=20200701"
-          className="w-full"
-          alt=""
-        />
+        <img src="./nav.jpg" className="w-full" alt="" />
       </nav>
       {steps === 0 && (
         <div className="bg-[#FFFFF0]">
