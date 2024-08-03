@@ -623,44 +623,45 @@ const Main = () => {
                 Review Payment Method
               </button>
               {/* footer section */}
-          <div className="w-[80%] mt-[20px] mx-auto border-y-[1.5px] border-solid border-[#8D8866] py-[20px]">
-            <p className="text-[#626D4D] text-[11px] text-center">
-              Thank you for your interest in Forest Lawn.
-            </p>
-            <div className="gap-8 flex pt-[10px]">
-              <p className="text-[#626D4D] text-[12px]">
-                Copyright @ 2024 FOREST LAWN MEMORIAL-PARK ASSOCATION FOREST
-                LAWN MEMORIAL-PARKS & MORTUARIES
-              </p>
-              <div className="flex ">
-                <p className="text-[#626D4D] text-[11px] ">
-                  We respect your privacy and will not sell your personal
-                  information. Forest Lawn will collect and use the information
-                  you provide here to periodically email, call or text you with
-                  information about products, services, and events according to
-                  the terms of the Forest Lawn{" "}
-                  <Link href={""} className="underline">
-                    Privacy Policy and Terms of Use
-                  </Link>{" "}
-                  , until you change your communication preferences at
-                  <Link href={""} className="underline">
-                    www.forestlawn.com/preferences.
-                  </Link>
+              <div className="w-[80%] mt-[20px] mx-auto border-y-[1.5px] border-solid border-[#8D8866] py-[20px]">
+                <p className="text-[#626D4D] text-[11px] text-center">
+                  Thank you for your interest in Forest Lawn.
+                </p>
+                <div className="gap-8 flex pt-[10px]">
+                  <p className="text-[#626D4D] text-[12px]">
+                    Copyright @ 2024 FOREST LAWN MEMORIAL-PARK ASSOCATION FOREST
+                    LAWN MEMORIAL-PARKS & MORTUARIES
+                  </p>
+                  <div className="flex ">
+                    <p className="text-[#626D4D] text-[11px] ">
+                      We respect your privacy and will not sell your personal
+                      information. Forest Lawn will collect and use the
+                      information you provide here to periodically email, call
+                      or text you with information about products, services, and
+                      events according to the terms of the Forest Lawn{" "}
+                      <Link href={""} className="underline">
+                        Privacy Policy and Terms of Use
+                      </Link>{" "}
+                      , until you change your communication preferences at
+                      <Link href={""} className="underline">
+                        www.forestlawn.com/preferences.
+                      </Link>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-[16px] flex flex-col gap-2">
+                <p className="text-[#626D4D] text-center text-[11px] font-light">
+                  ARCADIA FD 2186 | CATHEDRAL CITY FD 1847 | CITY OF INDUSTRY FD
+                  2121 | COACHELLA FD 640 | COVINA HILLS FD 1150 | CYPRESS FD
+                  1051
+                </p>
+                <p className="text-[#626D4D] text-center text-[11px] font-light">
+                  GLENDALE FD 656 | HOLLYWOOD HILLS FD 904 | INDIO FD 967 | LONG
+                  BEACH FD 1151 | MONROVIA FD 221 | SAN DIMAS FD 1783 | WHITTIER
+                  FD 2302
                 </p>
               </div>
-            </div>
-          </div>
-          <div className="pt-[16px] flex flex-col gap-2">
-            <p className="text-[#626D4D] text-center text-[11px] font-light">
-              ARCADIA FD 2186 | CATHEDRAL CITY FD 1847 | CITY OF INDUSTRY FD
-              2121 | COACHELLA FD 640 | COVINA HILLS FD 1150 | CYPRESS FD 1051
-            </p>
-            <p className="text-[#626D4D] text-center text-[11px] font-light">
-              GLENDALE FD 656 | HOLLYWOOD HILLS FD 904 | INDIO FD 967 | LONG
-              BEACH FD 1151 | MONROVIA FD 221 | SAN DIMAS FD 1783 | WHITTIER FD
-              2302
-            </p>
-          </div>
             </div>
           </form>
         </div>
@@ -676,7 +677,7 @@ const Main = () => {
         <div className="flex flex-col items-center justify-center bg-[#E0e9C6] h-screen">
           {response ? (
             <div className="p-6 rounded-lg">
-              {response.resultCode === "Authorised" ? (
+              {response.paymentResponse.resultCode === "Authorised" ? (
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-green-600">
                     Thank You!

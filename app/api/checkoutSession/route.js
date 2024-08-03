@@ -26,6 +26,10 @@ export async function POST(req, res) {
     billingAddress: body.billingAddress,
     shopperEmail: body.shopperEmail,
     shopperName: body.shopperName,
+    additionalData: {
+      "account.number": body.accountNumber,
+      "contract.name": body.nameOnContract,
+    },
   };
   console.log({ paymentRequest });
 
