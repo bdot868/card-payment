@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { FaRegCalendarDays } from "react-icons/fa6";
 import { AdyenCheckout } from "@adyen/adyen-web";
 import Review from "./Review";
+import Link from "next/link";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -166,9 +167,51 @@ const Main = () => {
       </nav>
       {steps === 0 && (
         <div className="bg-[#FFFFF0]">
+          <div className="w-[80%] mx-auto flex flex-col gap-8 py-[40px]">
+            <p>
+              Thank you for choosing Forest Lawn's online bill payment option.
+              You can make your monthly payment instantly with no user name or
+              passwords to remember. All you need is your information and a
+              credit card.
+            </p>
+            <p>
+              PLEASE NOTE: You will need your full account information,
+              including your Account Number. The Account Number can be found on
+              your monthly statement.
+            </p>
+            <p>
+              Once you have your Account Number, simply enter the required
+              information below and click SUBMIT. Our Bill Pay system will
+              update your account within two (2) business days of your approved
+              credit card payment. For your convenience, we accept the following
+              methods of payment: Visa, MasterCard and Discover.
+            </p>
+            <p className="font-bold text-red-600">
+              This Bill Pay feature only applies to advance planning accounts
+              ("ahead of need" plans). Accounts that are considered at-need
+              ("time of loss" plans) cannot use this feature at this time. To
+              pay for "at-need" plans, please call the park's cashier at the
+              number provided by your Memorial Counselor.
+            </p>
+            <div className="flex justify-center">
+              <p className="w-[85%]">
+                If you have any questions, please call 1 (888) 204-3131 and ask
+                for Client Accounts. We have staff available to assist you
+                Monday through Friday, 8:00 am to 5:00 pm.
+              </p>
+              <p className="w-[15%] text-end">
+                Call Us Directly <br />
+                (888) 204-3131
+              </p>
+            </div>
+            <p>
+              Thank you again for choosing the quickest and easiest way to make
+              a payment with Forest Lawn.
+            </p>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmitReview)}
-            className="space-y-4 p-4 bg-green-100"
+            className="space-y-4 p-4 bg-[#FFFFF0]"
           >
             <div className="w-[80%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px] ">
               <h2 className=" text-[36px] text-[#626D4D]">
@@ -579,6 +622,45 @@ const Main = () => {
               >
                 Review Payment Method
               </button>
+              {/* footer section */}
+          <div className="w-[80%] mt-[20px] mx-auto border-y-[1.5px] border-solid border-[#8D8866] py-[20px]">
+            <p className="text-[#626D4D] text-[11px] text-center">
+              Thank you for your interest in Forest Lawn.
+            </p>
+            <div className="gap-8 flex pt-[10px]">
+              <p className="text-[#626D4D] text-[12px]">
+                Copyright @ 2024 FOREST LAWN MEMORIAL-PARK ASSOCATION FOREST
+                LAWN MEMORIAL-PARKS & MORTUARIES
+              </p>
+              <div className="flex ">
+                <p className="text-[#626D4D] text-[11px] ">
+                  We respect your privacy and will not sell your personal
+                  information. Forest Lawn will collect and use the information
+                  you provide here to periodically email, call or text you with
+                  information about products, services, and events according to
+                  the terms of the Forest Lawn{" "}
+                  <Link href={""} className="underline">
+                    Privacy Policy and Terms of Use
+                  </Link>{" "}
+                  , until you change your communication preferences at
+                  <Link href={""} className="underline">
+                    www.forestlawn.com/preferences.
+                  </Link>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="pt-[16px] flex flex-col gap-2">
+            <p className="text-[#626D4D] text-center text-[11px] font-light">
+              ARCADIA FD 2186 | CATHEDRAL CITY FD 1847 | CITY OF INDUSTRY FD
+              2121 | COACHELLA FD 640 | COVINA HILLS FD 1150 | CYPRESS FD 1051
+            </p>
+            <p className="text-[#626D4D] text-center text-[11px] font-light">
+              GLENDALE FD 656 | HOLLYWOOD HILLS FD 904 | INDIO FD 967 | LONG
+              BEACH FD 1151 | MONROVIA FD 221 | SAN DIMAS FD 1783 | WHITTIER FD
+              2302
+            </p>
+          </div>
             </div>
           </form>
         </div>
@@ -625,7 +707,7 @@ const Main = () => {
             </div>
           )}
           <button
-          onClick={() => setSteps(0)}
+            onClick={() => setSteps(0)}
             style={{ textShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)" }}
             className="bg-[#385624] hover:bg-[#385624d4] text-white h-[40px] w-[6rem] rounded-md"
           >
