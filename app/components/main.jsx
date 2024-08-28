@@ -75,6 +75,9 @@ const Main = () => {
   const [steps, setSteps] = useState(0);
   const [formData, setFormData] = useState({});
   const [response, setResponse] = useState({});
+  const [EmailResponse,setEmailResponse]= useState({})
+  console.log({response})
+  console.log({formData})
 
   useEffect(() => {
     const initCheckout = async () => {
@@ -148,10 +151,35 @@ const Main = () => {
       console.log("Payment response:", response);
       setSteps(2);
       // Handle the payment response accordingly
+
+      if(!response.message==="Payment refused"){const sendEmail= await fetch("/api/nodemiller",{
+        method:"POST",
+        headers: { "Content-Type": "application/json" },
+        body:JSON.stringify({
+          accountNumber: formData.accountNumber,
+          nameOnContract:formData.nameOnContract,
+          firstName:formData.firstName,
+          lastName:formData.lastName,
+          streetAddress:formData.streetAddress,
+          city: formData.city,
+          state: formData.state,
+          zip: formData.zip,
+          email: formData.email
+        })
+      })
+      const emailresponse = await sendEmail.json();
+      setEmailResponse(emailresponse)
+      console.log({EmailResponse})}
+
+
     } catch (error) {
       console.error("Payment submission error:", error);
     }
   };
+
+  
+
+
   const onSubmitReview = (formData) => {
     setFormData(formData);
     setSteps(1);
