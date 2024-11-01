@@ -7,7 +7,7 @@ const Review = ({ formData, handleSubmit, onSubmit }) => {
       
       <form className="space-y-4 p-4 bg-green-100">
         {/* Card information */}
-        <div className="md:w-[80%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px]">
+        <div className="md:w-[60%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px]">
           <h2 className=" text-[24px] md:text-[36px] text-[#626D4D]">
             Card Holder Information
           </h2>
@@ -121,7 +121,7 @@ const Review = ({ formData, handleSubmit, onSubmit }) => {
           </div>
         </div>
         {/* Credit card information */}
-        <div className="md:w-[80%] mx-auto bg-[#E0e9C6] py-[30px] px-[20px]">
+        <div className="md:w-[60%] mx-auto bg-[#E0e9C6] py-[30px] px-[20px]">
           <h2 className=" text-[24px] md:text-[36px] text-[#626D4D]">
             Credit Card Information
           </h2>
@@ -188,7 +188,7 @@ const Review = ({ formData, handleSubmit, onSubmit }) => {
           </div>
         </div>
         {/* purchaser information */}
-        <div className="md:w-[80%] mx-auto bg-[#E0e9C6] py-[30px] px-[20px]">
+        <div className="md:w-[60%] mx-auto bg-[#E0e9C6] py-[30px] px-[20px]">
           <h2 className=" text-[24px] md:text-[36px] text-[#626D4D]">Purchaser Information</h2>
           <div className="flex gap-8 pt-[16px] items-center">
             <label className="block w-[50%] md:w-[20%] text-sm md:text-base text-[#626D4D]">Account #</label>
@@ -247,7 +247,7 @@ const Review = ({ formData, handleSubmit, onSubmit }) => {
             </button>
           </div>
           {/* footer section */}
-          <div className="md:w-[80%] mt-[20px] mx-auto border-y-[1.5px] border-solid border-[#8D8866] py-[20px]">
+          <div className="md:w-[60%] mt-[20px] mx-auto border-y-[1.5px] border-solid border-[#8D8866] py-[20px]">
             <p className="text-[#626D4D] text-[11px] text-center">
               Thank you for your interest in Forest Lawn.
             </p>

@@ -7,21 +7,30 @@ export async function POST(request) {
     const data = await request.json();
     console.log({ data });
 
+    let poolConfig = "SMTP: forestlawn-com.mail.protection.outlook.com/?pool=true";
+
     // Step 1: Create transporter
+    // const transporter = nodemailer.createTransport({
+    //   host: process.env.EMAIL_HOST, // e.g., "mail.privateemail.com"
+    //   port: 465,
+    //   secure: true,
+    //   auth: {
+    //     user: process.env.EMAIL_USER, // e.g., "info@coderacle.com"
+    //     pass: process.env.EMAIL_PASS, // e.g., "Dunkrink#1940"
+    //   },
+    // });
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST, // e.g., "mail.privateemail.com"
-      port: 465,
-      secure: true,
+      service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER, // e.g., "info@coderacle.com"
-        pass: process.env.EMAIL_PASS, // e.g., "Dunkrink#1940"
-      },
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS, 
+      }
     });
 
     // Step 2: Setup email options
     const mailOptions = {
       from: `"ForestLawn" <${process.env.EMAIL_USER}>`, // sender address
-      to: [`${data.email}`], // list of receivers
+      to: process.env.EMAIL_USER, // list of receivers
       subject: "ForestLawn SUbject",
       html: `<!doctype html>
       <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">

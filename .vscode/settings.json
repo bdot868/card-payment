@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/f7c28856-8f6d-4fc0-85fa-29f65cb0d8fa/resourceGroups/fl-rg-react2adyen-dev-westus-001/providers/Microsoft.Web/sites/fl-app-web-react2adyen-dev-westus-001",
+    "appService.deploySubpath": "."
+}

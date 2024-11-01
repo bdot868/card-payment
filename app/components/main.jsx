@@ -80,10 +80,13 @@ const Main = () => {
   console.log({formData})
 
   useEffect(() => {
+    console.log("hey")
     const initCheckout = async () => {
       const script = document.createElement("script");
       script.src =
-        "https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.0.0/adyen.js";
+        // "https://checkoutshopper-live-us.adyen.com/checkoutshopper/sdk/5.70.0/adyen.js";
+        "https://8ea4a1236c1f4ef2-forestlawn-checkoutshopper-live-us.adyen.com/checkoutshopper/sdk/5.70.0/adyen.js";
+        // "https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.0.0/adyen.js";
       script.async = true;
       script.onload = async () => {
         const configuration = {
@@ -93,7 +96,8 @@ const Main = () => {
           countryCode: "US",
           paymentMethodsResponse: {}, // Will be fetched below
         };
-        const checkoutInstance = await new window.AdyenCheckout(configuration);
+        // const checkoutInstance = await new window.AdyenCheckout(configuration);
+        const checkoutInstance = await AdyenCheckout({ ...configuration });
         console.log({ checkoutInstance });
         setCheckout(checkoutInstance);
       };
@@ -140,6 +144,8 @@ const Main = () => {
           amount: { value: formData.paymentAmount * 100, currency: "USD" },
           billingAddress: billingAddress,
           shopperEmail: formData.email,
+          nameOnContract: formData.nameOnContract,
+          accountNumber: formData.accountNumber,
           shopperName: {
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -152,24 +158,26 @@ const Main = () => {
       setSteps(2);
       // Handle the payment response accordingly
 
-      if(!response.message==="Payment refused"){const sendEmail= await fetch("/api/nodemiller",{
-        method:"POST",
-        headers: { "Content-Type": "application/json" },
-        body:JSON.stringify({
-          accountNumber: formData.accountNumber,
-          nameOnContract:formData.nameOnContract,
-          firstName:formData.firstName,
-          lastName:formData.lastName,
-          streetAddress:formData.streetAddress,
-          city: formData.city,
-          state: formData.state,
-          zip: formData.zip,
-          email: formData.email
-        })
-      })
-      const emailresponse = await sendEmail.json();
-      setEmailResponse(emailresponse)
-      console.log({EmailResponse})}
+      // if(response.message==="Payment authorised"){
+      //   console.log('nodemailer')
+      //   const sendEmail = await fetch("/api/nodemailer", {
+      //   method:"POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body:JSON.stringify({
+      //     accountNumber: formData.accountNumber,
+      //     nameOnContract:formData.nameOnContract,
+      //     firstName:formData.firstName,
+      //     lastName:formData.lastName,
+      //     streetAddress:formData.streetAddress,
+      //     city: formData.city,
+      //     state: formData.state,
+      //     zip: formData.zip,
+      //     email: formData.email
+      //   })
+      // })
+      // const emailresponse = await sendEmail.json();
+      // setEmailResponse(emailresponse)
+      // console.log({EmailResponse})}
 
 
     } catch (error) {
@@ -191,7 +199,7 @@ const Main = () => {
       </nav>
       {steps === 0 && (
         <div className="bg-[#FFFFF0]">
-          <div className="w-[90%] md:w-[80%] mx-auto flex flex-col gap-8 py-[40px]">
+          <div className="w-[60%] md:w-[60%] mx-auto flex flex-col gap-8 py-[40px]">
             <p>
               Thank you for choosing Forest Lawn's online bill payment option.
               You can make your monthly payment instantly with no user name or
@@ -237,7 +245,7 @@ const Main = () => {
             onSubmit={handleSubmit(onSubmitReview)}
             className="space-y-4 p-4 bg-[#FFFFF0]"
           >
-            <div className="md:w-[80%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px] ">
+            <div className="md:w-[60%] mx-auto bg-[#E0e9C6] pt-[20px] pb-[30px] px-[20px] ">
               <h2 className=" text-[24px] md:text-[36px] text-[#626D4D]">
                 Card Holder Information
               </h2>
@@ -457,7 +465,7 @@ const Main = () => {
               </div>
             </div>
 
-            <div className="md:w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
+            <div className="md:w-[60%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
               <h2 className="text-[24px] md:text-[36px] text-[#626D4D]">
                 Credit Card Information
               </h2>
@@ -594,7 +602,7 @@ const Main = () => {
               </p>
             </div>
 
-            <div className="md:w-[80%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
+            <div className="md:w-[60%] mx-auto bg-[#E0e9C6]  py-[30px] px-[20px] ">
               <h2 className="text-[24px] md:text-[36px] text-[#626D4D]">
                 Purchaser Information
               </h2>
@@ -718,7 +726,7 @@ const Main = () => {
                     Thank You!
                   </h2>
                   <p className="mt-4 text-gray-700">
-                    Your payment was successfully authorised.
+                    Your payment was successfully authorized.
                   </p>
                 </div>
               ) : (
@@ -730,7 +738,7 @@ const Main = () => {
                     Unfortunately, your payment was refused.
                   </p>
                   <p className="mt-2 text-gray-500">
-                    Reason: {response?.paymentResponse?.refusalReason}
+                    {/* Reason: {response?.paymentResponse?.refusalReason} */}
                   </p>
                 </div>
               )}
